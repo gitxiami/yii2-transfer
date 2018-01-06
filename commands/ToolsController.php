@@ -37,18 +37,18 @@ class ToolsController extends Controller
 		   $query = new Query;
 		   $db = Yii::$app->db;
 		   
-		   $list = $query->from('user')->where(['status' =>['$eq'=>'1']])->limit(5)->all($mongodb);
+		   $list = $query->from('user')->where(['status' =>['$eq'=>'1']])->limit(10000)->all($mongodb);
 		 
 		   $transaction = $db->beginTransaction();
 		   try {
 			   foreach($list as $v){
 				   $table_code = $this->getCrcHash($v['mobile']);
 				   $db->createCommand( "REPLACE INTO tickets_user (stub) VALUES ('a');")->execute();
-			       $ticket_id = $db->getLastInsertID();
+			           $ticket_id = $db->getLastInsertID();
 				   
 				   $db->createCommand()->insert('user_'.$table_code, ['id' => $ticket_id,
-						            'mobile'       => $v['mobile'],
-                                    'nickname'     => $v['nickname'],
+						                       'mobile'       => $v['mobile'],
+                                                                       'nickname'     => $v['nickname'],
 									'gender'       => $v['gender'],
 									'device'       => $v['device'],
 									'os'           => $v['os'],
@@ -56,13 +56,14 @@ class ToolsController extends Controller
 									'ip'           => $v['ip'],
 									'location'     => serialize($v['location']),
 									'province'     => $v['province'],
-						            'city'         => $v['city'],
+						                        'city'         => $v['city'],
 									'district'     => $v['district'],
-								   'deliver_address'=> serialize($v['deliver_address'])
+								         'deliver_address'=> serialize($v['deliver_address'])
 								   ])->execute();
 				   $transaction->commit();
 				   $mongodb->getCollection('user')->update(['_id'=>$v['_id']],['$set'=>['status'=>1]]);
 			   }
+			    
 		   } catch (Exception $e) {
 			   $transaction->rollBack();
 		   }
