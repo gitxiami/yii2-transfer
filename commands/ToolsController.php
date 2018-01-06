@@ -14,7 +14,7 @@ use yii\mongodb\Query;
  *
  * This command is provided as an example for you to learn how to create console commands.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author xiami <1134741860@qq.com>
  * @since 2.0
  */
 class ToolsController extends Controller
